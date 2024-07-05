@@ -1,110 +1,79 @@
 // src/components/PieChart.tsx
-import React, { useEffect, useState } from 'react';
-import { Bar, Line, Pie } from 'react-chartjs-2';
+
+import React from 'react';
+import { Pie } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
   Title,
   Tooltip,
   Legend,
+  ArcElement,
 } from 'chart.js';
-import { MonthlyStatus, fetchMonthlyStatus } from '../services/apiService';
 
 ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
+  ArcElement,
   Title,
   Tooltip,
   Legend
 );
 
-const PieChart: React.FC = () => {
+interface PieChartProps {
+  data: { year: string; month: string; status: string; count: number }[];
+}
 
-  const [chartData, setChartData] = useState<any>(null);
+const PieChart: React.FC<PieChartProps> = ({ data }) => {
+  // Agrupando os dados por status
+  const statusGroups: { [key: string]: number } = {
+    CANCELADO: 0,
+    PENDENTE: 0,
+    SUCESSO: 0,
+  };
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const data = await fetchMonthlyStatus();
-        const labels = ['Red', 'Blue', 'Yellow'];
+  data.forEach((item) => {
+    const key = item.status.trim();
+    if (key in statusGroups) {
+      statusGroups[key] += item.count;
+    }
+  });
 
-        const counts: { [key: string]: number[] } = { CANCELADO: [], PENDENTE: [], SUCESSO: [] };
-        for (let i = 0; i < data.length; i++) {
-          const statusKey = data[i].status.trim(); // Remove any extra spaces
+  // Obtendo as labels e os dados para o gráfico
+  const labels = Object.keys(statusGroups);
+  const datasets = [
+    {
+      data: Object.values(statusGroups),
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.6)',
+        'rgba(54, 162, 235, 0.6)',
+        'rgba(75, 192, 192, 0.6)',
+      ],
+      borderColor: [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(75, 192, 192, 1)',
+      ],
+      borderWidth: 1,
+    },
+  ];
 
+  const chartData = {
+    labels: labels,
+    datasets: datasets,
+  };
 
-          if (!counts[statusKey]) {
-            counts[statusKey] = []; // Initialize if not already
-          }
-          if (data[i].count !== undefined) {
-            counts[statusKey].push(data[i].count);
-          }
-
-        }
-        console.log(counts)
-
-        const datasets = [
-          {
-            label: 'CANCELADO',
-            data: counts.CANCELADO,
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1,
-          },
-          {
-            label: 'PENDENTE',
-            data: counts.PENDENTE,
-            backgroundColor: 'rgba(255, 206, 86, 0.2)',
-            borderColor: 'rgba(255, 206, 86, 1)',
-            borderWidth: 1,
-          },
-          {
-            label: 'SUCESSO',
-            data: counts.SUCESSO,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-          },
-        ];
-
-        setChartData({
-          labels: labels,
-          datasets: datasets
-        });
-
-      } catch (error) {
-        console.log(error)
-      }
-    };
-    getData();
-
-  }, []);
+  const options = {
+    plugins: {
+      title: {
+        display: true,
+        text: 'Total de Status',
+      },
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+  };
 
   return (
-    <div>
-      {chartData ? (
-        
-        <Pie
-          data={chartData}
-          options={{
-            responsive: true,
-            plugins: {
-              legend: {
-                position: 'top',
-              },
-              title: {
-                display: true,
-                text: 'Status Mensal de Pedidos',
-              },
-            },
-          }}
-        />
-      ) : (
-        <p>Carregando...</p>
-      )}
+    <div style={{ height: '500px', width: '100%', margin: 'auto' }}>
+      <Pie data={chartData} options={options} />
     </div>
   );
 };

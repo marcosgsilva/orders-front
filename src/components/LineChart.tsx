@@ -1,85 +1,112 @@
-import React, { useEffect, useState } from 'react';
-import { Bar, Line } from 'react-chartjs-2';
+import React, { useState, useEffect } from 'react';
+import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
   Title,
+  LineElement,
   Tooltip,
   Legend,
+  PointElement,
 } from 'chart.js';
-import { MonthlyStatus, fetchMonthlyStatus } from '../services/apiService';
+import { ChartData } from '../models/ChartData';
 
+// Registrando os componentes necessários do Chart.js
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  BarElement,
+  LineElement,
+  PointElement,
   Title,
   Tooltip,
   Legend
 );
 
-const LineChart: React.FC = () => {
+interface LineChartProps {
+  data: {
+    year: string;
+    month: string;
+    status: string;
+    count: number;
+  }[];
+}
 
-  const [chartData, setChartData] = useState<any>(null);
+const LineChart: React.FC<LineChartProps> = ({ data }) => {
+  const [chartData, setChartData] = useState<ChartData | null>(null);
 
   useEffect(() => {
-    const getData = async () => {
+    const fetchData = async () => {
       try {
-        const data = await fetchMonthlyStatus();
-        const labels = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-        const counts: { [key: string]: number[] } = { CANCELADO: [], PENDENTE: [], SUCESSO: [] };
-        for (let i = 0; i < data.length; i++) {
-          const statusKey = data[i].status.trim(); // Remove any extra spaces
-
-
-          if (!counts[statusKey]) {
-            counts[statusKey] = []; // Initialize if not already
-          }
-          if (data[i].count !== undefined) {
-            counts[statusKey].push(data[i].count);
+        // Agrupar os dados por mês e status
+        const groupedData = data.reduce((acc, item) => {
+          const key = `${item.year}-${item.month}`;
+          if (!acc[key]) {
+            acc[key] = {
+              month: `${item.month}/${item.year}`,
+              CANCELADO: 0,
+              PENDENTE: 0,
+              SUCESSO: 0,
+            };
           }
 
-        }
-        console.log(counts)
+          // Adicionar contagem ao tipo de status correto
+          if (item.status === 'CANCELADO ') {
+            acc[key].CANCELADO += item.count;
+          } else if (item.status === 'PENDENTE  ') {
+            acc[key].PENDENTE += item.count;
+          } else if (item.status === 'SUCESSO   ') {
+            acc[key].SUCESSO += item.count;
+          }
 
-        const datasets = [
-          {
-            label: 'CANCELADO',
-            data: counts.CANCELADO,
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1,
-          },
-          {
-            label: 'PENDENTE',
-            data: counts.PENDENTE,
-            backgroundColor: 'rgba(255, 206, 86, 0.2)',
-            borderColor: 'rgba(255, 206, 86, 1)',
-            borderWidth: 1,
-          },
-          {
-            label: 'SUCESSO',
-            data: counts.SUCESSO,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-          },
-        ];
+          return acc;
+        }, {});
+
+        // Ordenar os meses para garantir a ordem correta no gráfico
+        const sortedData = Object.values(groupedData).sort((a, b) =>
+          a.month.localeCompare(b.month)
+        );
+
+        // Extrair labels e dados para o gráfico
+        const months = sortedData.map((item) => item.month);
+        const CANCELADO = sortedData.map((item) => item.CANCELADO);
+        const PENDENTE = sortedData.map((item) => item.PENDENTE);
+        const SUCESSO = sortedData.map((item) => item.SUCESSO);
 
         setChartData({
-          labels: labels,
-          datasets: datasets
+          labels: months,
+          datasets: [
+            {
+              label: 'CANCELADO',
+              data: CANCELADO,
+              backgroundColor: 'rgba(255, 99, 132, 0.2)',
+              borderColor: 'rgba(255, 99, 132, 1)',
+              borderWidth: 1,
+            },
+            {
+              label: 'PENDENTE',
+              data: PENDENTE,
+              backgroundColor: 'rgba(255, 206, 86, 0.2)',
+              borderColor: 'rgba(255, 206, 86, 1)',
+              borderWidth: 1,
+            },
+            {
+              label: 'SUCESSO',
+              data: SUCESSO,
+              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              borderColor: 'rgba(75, 192, 192, 1)',
+              borderWidth: 1,
+            },
+          ],
         });
 
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     };
-    getData();
 
-  }, []);
+    fetchData();
+  }, [data]);
 
   return (
     <div>

@@ -1,51 +1,75 @@
-// src/components/DoughnutChart.tsx
-import React from 'react';
-import { Doughnut } from 'react-chartjs-2';
+import React from "react";
+import { Doughnut } from "react-chartjs-2";
 import {
   Chart as ChartJS,
-  ArcElement,
+  Title,
   Tooltip,
   Legend,
-} from 'chart.js';
+  ArcElement,
+} from "chart.js";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+// Registrando os componentes necessários do Chart.js
+ChartJS.register(Title, Tooltip, Legend, ArcElement);
 
-const DoughnutChart: React.FC = () => {
-  const data = {
-    labels: ['Red', 'Blue', 'Yellow'],
-    datasets: [
-      {
-        label: '# of Votes',
-        data: [12, 19, 3],
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-        ],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-        ],
-        borderWidth: 1,
-      },
-    ],
+interface DoughnutChartProps {
+  data: { year: string; month: string; status: string; count: number }[];
+}
+
+const DoughnutChart = ({ data }: DoughnutChartProps) => {
+  // Agrupando os dados por status
+  const statusGroups: { [key: string]: number } = {
+    CANCELADO: 0,
+    PENDENTE: 0,
+    SUCESSO: 0,
+  };
+
+  data.forEach((item) => {
+    const key = item.status.trim();
+    if (key in statusGroups) {
+      statusGroups[key] += item.count;
+    }
+  });
+
+  // Obtendo as labels e os dados para o gráfico
+  const labels = Object.keys(statusGroups);
+  const datasets = [
+    {
+      data: Object.values(statusGroups),
+      backgroundColor: [
+        "rgba(255, 99, 132, 0.6)",
+        "rgba(54, 162, 235, 0.6)",
+        "rgba(75, 192, 192, 0.6)",
+      ],
+      borderColor: [
+        "rgba(255, 99, 132, 1)",
+        "rgba(54, 162, 235, 1)",
+        "rgba(75, 192, 192, 1)",
+      ],
+      borderWidth: 1,
+    },
+  ];
+
+  const chartData = {
+    labels: labels,
+    datasets: datasets,
   };
 
   const options = {
-    responsive: true,
     plugins: {
-      legend: {
-        position: 'top' as const,
-      },
       title: {
         display: true,
-        text: 'Gráfico de Rosca',
+        text: "Total de Status",
       },
     },
+    responsive: true,
+    maintainAspectRatio: false,
   };
 
-  return <Doughnut data={data} options={options} />;
+  return (
+    <div style={{ height: "300px", width: "100%", margin: "auto" }}>
+      <Doughnut data={chartData} options={options} />
+    </div>
+  );
 };
 
 export default DoughnutChart;

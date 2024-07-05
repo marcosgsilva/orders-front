@@ -1,24 +1,27 @@
-import { PolarArea } from 'react-chartjs-2';
+import React from "react";
+import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
   Title,
   Tooltip,
   Legend,
-  RadialLinearScale,
-  PolarAreaController
-} from 'chart.js';
+} from "chart.js";
 
+// Registrando os componentes necessários do Chart.js
 ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
   Title,
   Tooltip,
-  Legend,
-  RadialLinearScale,
-  PolarAreaController
+  Legend
 );
 
-const PolarAreaChart = ({ data }) => {
-  console.log(data);
-
+const BarChart = ({ data }) => {
+ console.log(data);
   // Filtrar e organizar os dados por tipo de status e mês
   const groupedData = data.reduce((acc, item) => {
     const key = `${item.year}-${item.month}`;
@@ -55,51 +58,45 @@ const PolarAreaChart = ({ data }) => {
   const SUCESSO = sortedData.map((item) => item.SUCESSO);
 
   const chartData = {
-    labels: ['CANCELADO', 'PENDENTE', 'SUCESSO'],
+    labels: labels,
     datasets: [
       {
-        label: 'Status Mensal',
-        data: [CANCELADO.reduce((a, b) => a + b, 0), PENDENTE.reduce((a, b) => a + b, 0), SUCESSO.reduce((a, b) => a + b, 0)],
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.6)',
-          'rgba(54, 162, 235, 0.6)',
-          'rgba(75, 192, 192, 0.6)',
-        ],
+        label: "CANCELADO",
+        data: CANCELADO,
+        backgroundColor: "rgba(255, 99, 132, 0.6)",
+        borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 1,
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(75, 192, 192, 1)',
-        ]
+      },
+      {
+        label: "PENDENTE",
+        data: PENDENTE,
+        backgroundColor: "rgba(54, 162, 235, 0.6)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        borderWidth: 1,
+      },
+      {
+        label: "SUCESSO",
+        data: SUCESSO,
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
+        borderColor: "rgba(75, 192, 192, 1)",
+        borderWidth: 1,
       },
     ],
   };
 
   const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'Gráfico de Área Polar de Status Mensal',
-      },
-    },
     scales: {
-      r: {
-        ticks: {
-          display: false
-        }
-      }
+      y: {
+        beginAtZero: true,
+      },
     },
   };
 
   return (
-    <div style={{ height: "300px", width: "300px", margin: "auto" }}>
-      <PolarArea data={chartData} options={options} />
+    <div>
+      <Bar data={chartData} options={options} />
     </div>
   );
 };
 
-export default PolarAreaChart;
+export default BarChart;
