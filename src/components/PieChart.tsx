@@ -72,7 +72,7 @@ const PieChart: React.FC<PieChartProps> = ({ data }) => {
   };
 
   return (
-    <div style={{ height: '500px', width: '100%', margin: 'auto' }}>
+    <div style={{ height: '300px', width: '100%', margin: 'auto' }}>
       <Pie data={chartData} options={options} />
     </div>
   );
