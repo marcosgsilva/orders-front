@@ -14,7 +14,7 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ onSubmit }) => {
-  const { orderStatusData, fetchOrderDataByStatus } = useStatusContext();
+  const { orderStatusData, fetchOrderDataByStatus, orderData, fetchOrderData } = useStatusContext();
   const [formData, setFormData] = useState<FormData>({
     status: "",
     customerName: "",
@@ -42,12 +42,16 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit }) => {
     };
 
     fetchOrderDataByStatus(orders);
+    fetchOrderData(orders);
     onSubmit(formData);
+    console.log(orderData)
+
   };
 
   useEffect(() => {
-    console.log(orderStatusData);
-  }, [orderStatusData]);
+    console.log(orderData)
+
+  }, [orderStatusData, orderData]);
 
   return (
     <div className="fixed top-0 left-0 h-full w-64 bg-gray-800 text-white p-4">

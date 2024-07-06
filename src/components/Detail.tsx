@@ -14,7 +14,7 @@ type DetailProps = {
     | undefined;
 };
 const DetalhesItem: React.FC<DetailProps> = ({ id, closeModal }) => {
-  const { detailOrder } = useDetailsContext();
+  const { detailOrder,orders } = useDetailsContext();
   const [detail, setDetail] = useState<Orders | null>(null);
   const memoizedDetailOrder = useCallback(detailOrder, []);
 
@@ -22,6 +22,7 @@ const DetalhesItem: React.FC<DetailProps> = ({ id, closeModal }) => {
     const fetchDetail = async () => {
       try {
         const orderDetail = await memoizedDetailOrder(id);
+        console.log("DETAIL",orderDetail);
         setDetail(orderDetail);
       } catch (error) {
         console.log("Error ao Buscar detalhes do pedido", error);

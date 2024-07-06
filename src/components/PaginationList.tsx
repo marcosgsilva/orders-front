@@ -1,13 +1,11 @@
 import { useState } from "react";
-import { useStatusContext } from "../providers/StatusProvider";
 import DetalhesItem from "./Detail";
 
 const ITEMS_PER_PAGE = 10;
 
-const PaginationList = () => {
-  const { ordersList } = useStatusContext();
+const PaginationList = ({ data }) => {
 
-  if (!ordersList) {
+  if (!data) {
     return <div>Loading...</div>;
   }
 
@@ -26,7 +24,7 @@ const PaginationList = () => {
     }
   };
 
-  const items = ordersList.data;
+  const items = data;
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const selectedItems = items.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
@@ -38,7 +36,7 @@ const PaginationList = () => {
     setSelectedId(id);
     setModalOpenMap((prev) => ({
       ...prev,
-      [id]: true, 
+      [id]: true,
     }));
   };
 
@@ -76,7 +74,10 @@ const PaginationList = () => {
                   Detalhes
                 </button>
                 {modalOpenMap[item.id] && (
-                  <DetalhesItem id={item.id} closeModal={() => closeModal(item.id)} />
+                  <DetalhesItem
+                    id={item.id}
+                    closeModal={() => closeModal(item.id)}
+                  />
                 )}
               </span>
             </li>

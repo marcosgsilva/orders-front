@@ -8,15 +8,24 @@ import Sidebar from "./components/SideBar";
 import { StatusProvider, useStatusContext } from "./providers/StatusProvider";
 import { Orders } from "./models/Orders";
 import PolarAreaChart from "./components/PolarAreaChart";
+import PaginationList from "./components/PaginationList";
+import { DetailOrderProvider } from "./providers/DetailProvider";
 
 const MainContent = () => {
-  const { error, orderStatusData, fetchOrderDataByStatus } = useStatusContext();
-  const [sideMenuIsExpand, setSideMenuIsExpand] = useState(true);
+  const {
+    error,
+    orderData,
+    orderStatusData,
+    fetchOrderDataByStatus,
+    fetchOrderData,
+  } = useStatusContext();
 
   let handleSubmit = null;
 
   handleSubmit = async (formData: Orders) => {
     fetchOrderDataByStatus(formData);
+    fetchOrderData(formData);
+    console.log("APP DATA", orderData);
     console.log(orderStatusData);
   };
 
@@ -28,19 +37,7 @@ const MainContent = () => {
     <div className="flex">
       <div className="w-64">
         <Sidebar onSubmit={handleSubmit} />
-        <div
-          className={`flex-1 min-h-screen mx-0 bg-slate-100 transition-all duration-300 ease-in-out ${
-            sideMenuIsExpand ? "md:ml-72" : "md:ml-20"
-          }`}
-        ></div>
       </div>
-
-      {/* <button
-            className="bg-blue-500 text-white py-4 py-2 rounded"
-            onClick={toggleSidebar}
-          >
-            {isSidebarOpen ? "Fechar Sidebar" : "Abrir Sidebar"}
-          </button> */}
       <div className="flex-1 p-4">
         <header className="w-full py-10">
           <div className="mx-auto text-center">
@@ -76,6 +73,7 @@ const MainContent = () => {
             </div>
           </div>
         </div>
+        <PaginationList data={orderData} />
       </div>
     </div>
   );
@@ -84,7 +82,9 @@ const MainContent = () => {
 function App() {
   return (
     <StatusProvider>
-      <MainContent />
+      <DetailOrderProvider>
+        <MainContent />
+      </DetailOrderProvider>
     </StatusProvider>
   );
 }

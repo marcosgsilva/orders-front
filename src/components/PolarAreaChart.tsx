@@ -17,7 +17,6 @@ ChartJS.register(
 );
 
 const PolarAreaChart = ({ data }) => {
-  console.log(data);
 
   // Filtrar e organizar os dados por tipo de status e mês
   const groupedData = data.reduce((acc, item) => {

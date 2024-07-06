@@ -9,7 +9,6 @@ export const orderStatusPerMonthService = async (formData: Orders) => {
     const response = await axios.get(API_URL, {
       params: { ...formData },
     });
-    console.log("STATUS",response)
     return response.data.data;
   } catch (error) {
     console.log("Error fetching data", error);

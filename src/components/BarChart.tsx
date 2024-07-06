@@ -1,4 +1,3 @@
-import React from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -21,8 +20,6 @@ ChartJS.register(
 );
 
 const BarChart = ({ data }) => {
- console.log(data);
-  // Filtrar e organizar os dados por tipo de status e mês
   const groupedData = data.reduce((acc, item) => {
     const key = `${item.year}-${item.month}`;
     if (!acc[key]) {
@@ -34,7 +31,6 @@ const BarChart = ({ data }) => {
       };
     }
 
-    // Adicionar contagem ao tipo de status correto
     if (item.status === "CANCELADO ") {
       acc[key].CANCELADO += item.count;
     } else if (item.status === "PENDENTE  ") {
@@ -46,12 +42,10 @@ const BarChart = ({ data }) => {
     return acc;
   }, {});
 
-  // Ordenar os meses para garantir a ordem correta no gráfico
   const sortedData = Object.values(groupedData).sort((a, b) =>
     a.month.localeCompare(b.month)
   );
 
-  // Extrair labels e dados para o gráfico
   const labels = sortedData.map((item) => item.month);
   const CANCELADO = sortedData.map((item) => item.CANCELADO);
   const PENDENTE = sortedData.map((item) => item.PENDENTE);

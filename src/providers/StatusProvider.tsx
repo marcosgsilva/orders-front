@@ -49,7 +49,6 @@ export const StatusProvider: React.FC<StatusProviderProps> = ({ children }) => {
     try {
       const response = await orderListService(formData);
       setOrderData(response.data);
-      console.log(response);
       setLoading(false);
     } catch (error) {
       setError("Erro ao buscar dados");
@@ -62,7 +61,6 @@ export const StatusProvider: React.FC<StatusProviderProps> = ({ children }) => {
     try {
       const response = await orderStatusPerMonthService(formData);
       setOrderStatusData(response); // Atualiza o estado correto
-      console.log(response);
       setLoading(false);
     } catch (error) {
       setError("Erro ao buscar dados");
@@ -79,6 +77,7 @@ export const StatusProvider: React.FC<StatusProviderProps> = ({ children }) => {
     };
 
     fetchOrderDataByStatus(formData);
+    fetchOrderData(formData);
   }, []); // Executa apenas no carregamento inicial
 
   return (
