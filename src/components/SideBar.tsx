@@ -4,7 +4,7 @@ import { useStatusContext } from "../providers/StatusProvider";
 
 interface FormData {
   status: string;
-  customerName: string;
+  customer_name: string;
   description: string;
   quantity: number;
 }
@@ -14,10 +14,15 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ onSubmit }) => {
-  const { orderStatusData, fetchOrderDataByStatus, orderData, fetchOrderData } = useStatusContext();
+  const {
+    orderStatusData,
+    fetchOrderDataByStatus,
+    orderData,
+    fetchOrderData,
+  } = useStatusContext();
   const [formData, setFormData] = useState<FormData>({
     status: "",
-    customerName: "",
+    customer_name: "",
     description: "",
     quantity: 0,
   });
@@ -36,7 +41,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit }) => {
     e.preventDefault();
     const orders: Orders = {
       status: formData.status,
-      customer_name: formData.customerName,
+      customer_name: formData.customer_name,
       quantity: formData.quantity,
       description: formData.description,
     };
@@ -44,13 +49,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit }) => {
     fetchOrderDataByStatus(orders);
     fetchOrderData(orders);
     onSubmit(formData);
-    console.log(orderData)
-
+    console.log(orderData);
   };
 
   useEffect(() => {
-    console.log(orderData)
-
+    console.log(orderData);
   }, [orderStatusData, orderData]);
 
   return (
@@ -59,16 +62,16 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit }) => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label
-            htmlFor="customerName"
+            htmlFor="customer_name"
             className="block text-sm font-medium text-gray-400"
           >
             Cliente
           </label>
           <input
             type="text"
-            name="customerName"
-            id="customerName"
-            value={formData.customerName}
+            name="customer_name"
+            id="customer_name"
+            value={formData.customer_name}
             onChange={handleChange}
             className="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none
              focus:ring-indigo-500 sm:text-sm bg-gray-700 text-white"
@@ -128,13 +131,15 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit }) => {
              focus:ring-indigo-500 sm:text-sm bg-gray-700 text-white"
           />
         </div>
+        <div className="content-center">
         <button
           type="submit"
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 
+          className="content-center inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 
         hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           Pesquisar
         </button>
+        </div>
       </form>
     </div>
   );

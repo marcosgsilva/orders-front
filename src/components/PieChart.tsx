@@ -22,7 +22,6 @@ interface PieChartProps {
 }
 
 const PieChart: React.FC<PieChartProps> = ({ data }) => {
-  // Agrupando os dados por status
   const statusGroups: { [key: string]: number } = {
     CANCELADO: 0,
     PENDENTE: 0,
@@ -36,7 +35,6 @@ const PieChart: React.FC<PieChartProps> = ({ data }) => {
     }
   });
 
-  // Obtendo as labels e os dados para o gráfico
   const labels = Object.keys(statusGroups);
   const datasets = [
     {

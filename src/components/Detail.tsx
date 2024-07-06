@@ -14,7 +14,7 @@ type DetailProps = {
     | undefined;
 };
 const DetalhesItem: React.FC<DetailProps> = ({ id, closeModal }) => {
-  const { detailOrder,orders } = useDetailsContext();
+  const { detailOrder } = useDetailsContext();
   const [detail, setDetail] = useState<Orders | null>(null);
   const memoizedDetailOrder = useCallback(detailOrder, []);
 

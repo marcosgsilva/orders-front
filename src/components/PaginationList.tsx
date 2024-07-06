@@ -87,14 +87,14 @@ const PaginationList = ({ data }) => {
           <button
             onClick={handlePreviousPage}
             disabled={currentPage === 1}
-            className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
+            className="px-4 py-2 bg-blue-400 text-white rounded disabled:bg-gray-300"
           >
             Anterior
           </button>
           <button
             onClick={handleNextPage}
             disabled={startIndex + ITEMS_PER_PAGE >= items.length}
-            className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
+            className="px-4 py-2 bg-blue-400 text-white rounded disabled:bg-gray-300"
           >
             Próxima
           </button>
