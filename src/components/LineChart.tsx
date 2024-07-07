@@ -12,16 +12,7 @@ import {
 } from 'chart.js';
 import { ChartData } from '../models/ChartData';
 
-// Registrando os componentes necessários do Chart.js
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, Title, Tooltip, Legend);
 
 interface LineChartProps {
   data: {
@@ -64,7 +55,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
 
         // Ordenar os meses para garantir a ordem correta no gráfico
         const sortedData = Object.values(groupedData).sort((a, b) =>
-          a.month.localeCompare(b.month)
+          a.month.localeCompare(b.month),
         );
 
         // Extrair labels e dados para o gráfico
@@ -99,7 +90,6 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
             },
           ],
         });
-
       } catch (error) {
         console.log(error);
       }
@@ -109,7 +99,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
   }, [data]);
 
   return (
-    <div style={{ height: "100%", width: "100%", margin: "auto" }}>
+    <div style={{ height: '100%', width: '100%', margin: 'auto' }}>
       {chartData ? (
         <Line
           data={chartData}

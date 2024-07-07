@@ -1,17 +1,20 @@
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.node.json"
-    }
-  ],
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
-      "@services/*": ["services/*"]
-    }
-  }
+      "@providers/*": ["providers/*"],
+      "@services/*": ["services/*"],
+      "@components/*": ["components/*"]
+    },
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "target": "esnext",
+    "jsx": "preserve"
+  },
+  "include": ["src/**/*", "vite.config.ts"],
+  "exclude": ["node_modules", "build", "dist"]
 }

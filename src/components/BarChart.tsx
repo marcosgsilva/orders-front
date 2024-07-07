@@ -1,4 +1,4 @@
-import { Bar } from "react-chartjs-2";
+import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -7,20 +7,28 @@ import {
   Title,
   Tooltip,
   Legend,
-} from "chart.js";
+} from 'chart.js';
 
+interface DataProps {
+  data: {
+    year: number;
+    month: number;
+    status: string;
+    count: number;
+  }[];
+}
 // Registrando os componentes necessários do Chart.js
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const BarChart = ({ data }) => {
-  const groupedData = data.reduce((acc, item) => {
+interface ChartDataItem {
+  month: string;
+  CANCELADO: number;
+  PENDENTE: number;
+  SUCESSO: number;
+}
+
+const BarChart: React.FC<DataProps> = ({ data }) => {
+  const groupedData: Record<string, ChartDataItem> = data.reduce((acc, item) => {
     const key = `${item.year}-${item.month}`;
     if (!acc[key]) {
       acc[key] = {
@@ -31,20 +39,18 @@ const BarChart = ({ data }) => {
       };
     }
 
-    if (item.status === "CANCELADO ") {
+    if (item.status === 'CANCELADO ') {
       acc[key].CANCELADO += item.count;
-    } else if (item.status === "PENDENTE  ") {
+    } else if (item.status === 'PENDENTE  ') {
       acc[key].PENDENTE += item.count;
-    } else if (item.status === "SUCESSO   ") {
+    } else if (item.status === 'SUCESSO   ') {
       acc[key].SUCESSO += item.count;
     }
 
     return acc;
   }, {});
 
-  const sortedData = Object.values(groupedData).sort((a, b) =>
-    a.month.localeCompare(b.month)
-  );
+  const sortedData = Object.values(groupedData).sort((a, b) => a.month.localeCompare(b.month));
 
   const labels = sortedData.map((item) => item.month);
   const CANCELADO = sortedData.map((item) => item.CANCELADO);
@@ -55,24 +61,24 @@ const BarChart = ({ data }) => {
     labels: labels,
     datasets: [
       {
-        label: "CANCELADO",
+        label: 'CANCELADO',
         data: CANCELADO,
-        backgroundColor: "rgba(255, 99, 132, 0.6)",
-        borderColor: "rgba(255, 99, 132, 1)",
+        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+        borderColor: 'rgba(255, 99, 132, 1)',
         borderWidth: 1,
       },
       {
-        label: "PENDENTE",
+        label: 'PENDENTE',
         data: PENDENTE,
-        backgroundColor: "rgba(54, 162, 235, 0.6)",
-        borderColor: "rgba(54, 162, 235, 1)",
+        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+        borderColor: 'rgba(54, 162, 235, 1)',
         borderWidth: 1,
       },
       {
-        label: "SUCESSO",
+        label: 'SUCESSO',
         data: SUCESSO,
-        backgroundColor: "rgba(75, 192, 192, 0.6)",
-        borderColor: "rgba(75, 192, 192, 1)",
+        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+        borderColor: 'rgba(75, 192, 192, 1)',
         borderWidth: 1,
       },
     ],

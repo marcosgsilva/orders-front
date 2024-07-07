@@ -1,12 +1,12 @@
-import { PolarArea } from 'react-chartjs-2';
+import { PolarArea } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   Title,
   Tooltip,
   Legend,
   RadialLinearScale,
-  PolarAreaController
-} from 'chart.js';
+  PolarAreaController,
+} from "chart.js";
 
 ChartJS.register(
   Title,
@@ -17,7 +17,6 @@ ChartJS.register(
 );
 
 const PolarAreaChart = ({ data }) => {
-
   // Filtrar e organizar os dados por tipo de status e mês
   const groupedData = data.reduce((acc, item) => {
     const key = `${item.year}-${item.month}`;
@@ -54,22 +53,26 @@ const PolarAreaChart = ({ data }) => {
   const SUCESSO = sortedData.map((item) => item.SUCESSO);
 
   const chartData = {
-    labels: ['CANCELADO', 'PENDENTE', 'SUCESSO'],
+    labels: ["CANCELADO", "PENDENTE", "SUCESSO"],
     datasets: [
       {
-        label: 'Status Mensal',
-        data: [CANCELADO.reduce((a, b) => a + b, 0), PENDENTE.reduce((a, b) => a + b, 0), SUCESSO.reduce((a, b) => a + b, 0)],
+        label: "Status Mensal",
+        data: [
+          CANCELADO.reduce((a, b) => a + b, 0),
+          PENDENTE.reduce((a, b) => a + b, 0),
+          SUCESSO.reduce((a, b) => a + b, 0),
+        ],
         backgroundColor: [
-          'rgba(255, 99, 132, 0.6)',
-          'rgba(54, 162, 235, 0.6)',
-          'rgba(75, 192, 192, 0.6)',
+          "rgba(255, 99, 132, 0.6)",
+          "rgba(54, 162, 235, 0.6)",
+          "rgba(75, 192, 192, 0.6)",
         ],
         borderWidth: 1,
         borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(75, 192, 192, 1)',
-        ]
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(75, 192, 192, 1)",
+        ],
       },
     ],
   };
@@ -78,19 +81,19 @@ const PolarAreaChart = ({ data }) => {
     responsive: true,
     plugins: {
       legend: {
-        position: 'top',
+        position: "top",
       },
       title: {
         display: true,
-        text: 'Gráfico de Área Polar de Status Mensal',
+        text: "Gráfico de Área Polar de Status Mensal",
       },
     },
     scales: {
       r: {
         ticks: {
-          display: false
-        }
-      }
+          display: false,
+        },
+      },
     },
   };
 

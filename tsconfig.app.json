@@ -21,7 +21,12 @@
     "strict": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "baseUrl": "./src",
+    "paths": {
+      "@services/*": ["services/*"]
+    },
+    "noImplicitAny": false
   },
   "include": ["src"]
 }
