@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -18,39 +19,44 @@ interface DataProps {
   }[];
 }
 // Registrando os componentes necessários do Chart.js
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
-interface ChartDataItem {
-  month: string;
-  CANCELADO: number;
-  PENDENTE: number;
-  SUCESSO: number;
-}
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+);
 
 const BarChart: React.FC<DataProps> = ({ data }) => {
-  const groupedData: Record<string, ChartDataItem> = data.reduce((acc, item) => {
-    const key = `${item.year}-${item.month}`;
-    if (!acc[key]) {
-      acc[key] = {
-        month: `${item.month}/${item.year}`,
-        CANCELADO: 0,
-        PENDENTE: 0,
-        SUCESSO: 0,
-      };
-    }
+  const groupedData: Record<string, ChartDataItemModel> = data.reduce(
+    (acc: Record<string, ChartDataItemModel>, item) => {
+      const key = `${item.year}-${item.month}`;
+      if (!acc[key]) {
+        acc[key] = {
+          month: `${item.month}/${item.year}`,
+          CANCELADO: 0,
+          PENDENTE: 0,
+          SUCESSO: 0,
+        };
+      }
 
-    if (item.status === 'CANCELADO ') {
-      acc[key].CANCELADO += item.count;
-    } else if (item.status === 'PENDENTE  ') {
-      acc[key].PENDENTE += item.count;
-    } else if (item.status === 'SUCESSO   ') {
-      acc[key].SUCESSO += item.count;
-    }
+      if (item.status === 'CANCELADO ') {
+        acc[key].CANCELADO += item.count;
+      } else if (item.status === 'PENDENTE  ') {
+        acc[key].PENDENTE += item.count;
+      } else if (item.status === 'SUCESSO   ') {
+        acc[key].SUCESSO += item.count;
+      }
 
-    return acc;
-  }, {});
+      return acc;
+    },
+    {},
+  );
 
-  const sortedData = Object.values(groupedData).sort((a, b) => a.month.localeCompare(b.month));
+  const sortedData = Object.values(groupedData).sort((a, b) =>
+    a.month.localeCompare(b.month),
+  );
 
   const labels = sortedData.map((item) => item.month);
   const CANCELADO = sortedData.map((item) => item.CANCELADO);

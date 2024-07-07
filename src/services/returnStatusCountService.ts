@@ -1,5 +1,5 @@
-import { Orders } from "../models/Orders";
-import { MonthlyStatus } from "../models/MonthlyStatus";
+import { Orders } from "../models/OrdersModel";
+import { MonthlyStatus } from "../models/MonthlyStatusModel";
 import { orderStatusPerMonthService } from "./orderStatusPerMonthService";
 
 export const returnStatusCountService = async (formData: Orders): Promise<MonthlyStatus[]> => {

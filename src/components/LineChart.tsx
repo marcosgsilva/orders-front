@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -10,9 +10,17 @@ import {
   Legend,
   PointElement,
 } from 'chart.js';
-import { ChartData } from '../models/ChartData';
+import { ChartDataModel } from '../models/ChartDataModel';
 
-ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend,
+);
 
 interface LineChartProps {
   data: {
@@ -24,34 +32,37 @@ interface LineChartProps {
 }
 
 const LineChart: React.FC<LineChartProps> = ({ data }) => {
-  const [chartData, setChartData] = useState<ChartData | null>(null);
+  const [chartData, setChartData] = useState<ChartDataModel | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Agrupar os dados por mês e status
-        const groupedData = data.reduce((acc, item) => {
-          const key = `${item.year}-${item.month}`;
-          if (!acc[key]) {
-            acc[key] = {
-              month: `${item.month}/${item.year}`,
-              CANCELADO: 0,
-              PENDENTE: 0,
-              SUCESSO: 0,
-            };
-          }
+        const groupedData: Record<string, ChartDataItemModel> = data.reduce(
+          (acc: Record<string, ChartDataItemModel>, item) => {
+            const key = `${item.year}-${item.month}`;
+            if (!acc[key]) {
+              acc[key] = {
+                month: `${item.month}/${item.year}`,
+                CANCELADO: 0,
+                PENDENTE: 0,
+                SUCESSO: 0,
+              };
+            }
 
-          // Adicionar contagem ao tipo de status correto
-          if (item.status === 'CANCELADO ') {
-            acc[key].CANCELADO += item.count;
-          } else if (item.status === 'PENDENTE  ') {
-            acc[key].PENDENTE += item.count;
-          } else if (item.status === 'SUCESSO   ') {
-            acc[key].SUCESSO += item.count;
-          }
+            // Adicionar contagem ao tipo de status correto
+            if (item.status === 'CANCELADO ') {
+              acc[key].CANCELADO += item.count;
+            } else if (item.status === 'PENDENTE  ') {
+              acc[key].PENDENTE += item.count;
+            } else if (item.status === 'SUCESSO   ') {
+              acc[key].SUCESSO += item.count;
+            }
 
-          return acc;
-        }, {});
+            return acc;
+          },
+          {},
+        );
 
         // Ordenar os meses para garantir a ordem correta no gráfico
         const sortedData = Object.values(groupedData).sort((a, b) =>

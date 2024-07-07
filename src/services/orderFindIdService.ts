@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Orders } from "../models/Orders";
+import { Orders } from "../models/OrdersModel";
 
 const API_URL = "http://localhost:8000/api/orders";
 

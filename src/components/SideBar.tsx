@@ -1,6 +1,6 @@
-import React, { ChangeEvent, useState, useEffect } from "react";
-import { Orders } from "../models/Orders";
-import { useStatusContext } from "../providers/StatusProvider";
+import React, { ChangeEvent, useState, useEffect } from 'react';
+import { OrdersModel } from '../models/OrdersModel';
+import { useStatusContext } from '../providers/StatusProvider';
 
 interface FormData {
   status: string;
@@ -10,25 +10,22 @@ interface FormData {
 }
 
 interface SidebarProps {
-  onSubmit: (formData: FormData) => void;
+  onSubmit: (orders: OrdersModel) => Promise<void>;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ onSubmit }) => {
-  const {
-    orderStatusData,
-    fetchOrderDataByStatus,
-    orderData,
-    fetchOrderData,
-  } = useStatusContext();
-  const [formData, setFormData] = useState<FormData>({
-    status: "",
-    customer_name: "",
-    description: "",
+  const { orderStatusData, fetchOrderDataByStatus, orderData, fetchOrderData } =
+    useStatusContext();
+  const [formData, setFormData] = useState<OrdersModel>({
+    status: '',
+    customer_name: '',
+    description: '',
     quantity: 0,
+    id:0
   });
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setFormData({
@@ -39,26 +36,23 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const orders: Orders = {
-      status: formData.status,
-      customer_name: formData.customer_name,
-      quantity: formData.quantity,
-      description: formData.description,
+    onSubmit(formData);
+
+    const orders: OrdersModel = {
+      ...formData,
+      id: 0,
     };
 
     fetchOrderDataByStatus(orders);
     fetchOrderData(orders);
-    onSubmit(formData);
-    console.log(orderData);
   };
 
   useEffect(() => {
-    console.log(orderData);
   }, [orderStatusData, orderData]);
 
   return (
     <div className="fixed top-0 left-0 h-full w-64 bg-gray-800 text-white p-4">
-      <div className="p-4 text-lg font-bold">Filtros</div>
+      <div className="p-4 text-lg font-bold">Pesquisar Pedidos</div>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label
@@ -132,13 +126,13 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit }) => {
           />
         </div>
         <div className="content-center">
-        <button
-          type="submit"
-          className="content-center inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 
+          <button
+            type="submit"
+            className="content-center inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 
         hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          Pesquisar
-        </button>
+          >
+            Pesquisar
+          </button>
         </div>
       </form>
     </div>

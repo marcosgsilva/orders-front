@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import path from 'path';
+import * as path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,8 +13,11 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@providers': path.resolve('./', './src/providers'),
-      '@services': path.resolve('./', './src/services'),
+      '@providers': path.resolve(__dirname, './src/providers'),
+      '@services': path.resolve(__dirname, './src/services'),
     },
+  },
+  esbuild: {
+    // jsxInject: `import React from 'react';`,
   },
 });

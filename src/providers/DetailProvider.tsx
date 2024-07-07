@@ -1,16 +1,16 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { Orders } from "../models/Orders";
+import { OrdersModel } from "../models/OrdersModel";
 import { orderFindIdService } from "../services/orderFindIdService";
 
 type DetailOrdersContextType = {
-  detailOrder(id: number): Promise<Orders>;
-  orders: Orders | null; // Inicialmente nulo até que os dados sejam carregados
+  detailOrder(id: number): Promise<OrdersModel>;
+  orders: OrdersModel | null; // Inicialmente nulo até que os dados sejam carregados
 };
 
 const DetailOrdesContext = createContext<DetailOrdersContextType>({
   orders: null,
   detailOrder: async (id: number) => {
-    return {} as Orders;
+    return {} as OrdersModel;
   },
 });
 

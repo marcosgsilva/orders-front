@@ -5,9 +5,10 @@ import React, {
   useState,
   ReactNode,
 } from "react";
-import { Orders } from "../models/Orders";
+import { OrdersModel } from "../models/OrdersModel";
 import { orderListService } from "../services/orderListService";
 import { orderStatusPerMonthService } from "../services/orderStatusPerMonthService";
+import { OrdersPaginationModel } from "models/OrderPaginationModel";
 
 interface OrderData {
   year: string;
@@ -17,17 +18,20 @@ interface OrderData {
 }
 
 const defaultOrderData: OrderData[] = [];
+const defaultOrderModel: OrdersModel[] = [];
 
 const StatusContext = createContext<{
   orderData: OrderData[];
   orderStatusData: OrderData[];
+  orderListPagination: OrdersPaginationModel[];
   loading: boolean;
   error: string | null;
-  fetchOrderData: (formData: Orders) => void;
-  fetchOrderDataByStatus: (formData: Orders) => void;
+  fetchOrderData: (formData: OrdersModel) => void;
+  fetchOrderDataByStatus: (formData: OrdersModel) => void;
 }>({
   orderData: defaultOrderData,
   orderStatusData: defaultOrderData,
+  orderListPagination: defaultOrderModel,
   loading: true,
   error: null,
   fetchOrderData: () => {},
@@ -40,15 +44,16 @@ interface StatusProviderProps {
 
 export const StatusProvider: React.FC<StatusProviderProps> = ({ children }) => {
   const [orderData, setOrderData] = useState<OrderData[]>(defaultOrderData);
+  const [orderListPagination, setOrderListPagination] = useState<OrdersModel[]>(defaultOrderModel);
   const [orderStatusData, setOrderStatusData] = useState<OrderData[]>(defaultOrderData);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchOrderData = async (formData: Orders) => {
+  const fetchOrderData = async (formData: OrdersModel) => {
     setLoading(true);
     try {
       const response = await orderListService(formData);
-      setOrderData(response.data);
+      setOrderListPagination(response.data);
       setLoading(false);
     } catch (error) {
       setError("Erro ao buscar dados");
@@ -56,7 +61,7 @@ export const StatusProvider: React.FC<StatusProviderProps> = ({ children }) => {
     }
   };
 
-  const fetchOrderDataByStatus = async (formData: Orders) => {
+  const fetchOrderDataByStatus = async (formData: OrdersModel) => {
     setLoading(true);
     try {
       const response = await orderStatusPerMonthService(formData);
@@ -69,7 +74,8 @@ export const StatusProvider: React.FC<StatusProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
-    const formData: Orders = {
+    const formData: OrdersModel = {
+      id:0,
       status: "",
       customer_name: "",
       quantity: 0,
@@ -78,12 +84,13 @@ export const StatusProvider: React.FC<StatusProviderProps> = ({ children }) => {
 
     fetchOrderDataByStatus(formData);
     fetchOrderData(formData);
-  }, []); // Executa apenas no carregamento inicial
+  }, []); 
 
   return (
     <StatusContext.Provider
       value={{
         orderData,
+        orderListPagination,
         orderStatusData,
         loading,
         error,

@@ -1,6 +1,6 @@
 // src/models/ChartData.ts
 
-export interface ChartData {
+export interface ChartDataModel {
   labels: string[];
   datasets: {
     label: string;

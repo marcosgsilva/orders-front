@@ -6,22 +6,20 @@ import LineChart from './components/LineChart';
 import PieChart from './components/PieChart';
 import Sidebar from './components/SideBar';
 import { StatusProvider, useStatusContext } from './providers/StatusProvider';
-import { Orders } from './models/Orders';
+import { OrdersModel } from './models/OrdersModel';
 import PolarAreaChart from './components/PolarAreaChart';
 import PaginationList from './components/PaginationList';
 import { DetailOrderProvider } from './providers/DetailProvider';
 
 const MainContent = () => {
-  const { error, orderData, orderStatusData, fetchOrderDataByStatus, fetchOrderData } =
+  const { error, orderData, orderStatusData,orderListPagination, fetchOrderDataByStatus, fetchOrderData } =
     useStatusContext();
 
   let handleSubmit = null;
 
-  handleSubmit = async (formData: Orders) => {
+  handleSubmit = async (formData: OrdersModel): Promise<void>=> {
     fetchOrderDataByStatus(formData);
     fetchOrderData(formData);
-    console.log('APP DATA', orderData);
-    console.log(orderStatusData);
   };
 
   if (error) {
@@ -66,7 +64,7 @@ const MainContent = () => {
             </div>
           </div>
         </div>
-        <PaginationList data={orderData} />
+        <PaginationList data={orderListPagination} />
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
-export interface Orders {
-  id?: number;
+export interface OrdersModel {
+  id: number;
   status: string;
   customer_name: string;
   description: string;
